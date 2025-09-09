@@ -1,18 +1,30 @@
-import datetime
+import json
 
-def welcome_script(date: str) -> str: #  Входные данные - YYYY-MM-DD HH:MM:SS
-    """ Функция приветствия пользователя """
+from config import PATH_TO_EXCEL
+from src.utils import (
+    current_time_greeting,
+    get_slice_data
+)
 
-    current_time = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
-    current_hour = current_time.hour
+def main_page(date_str: str) -> json:
+    """ Функция принимает на вход строку с датой в формате
+    YYYY-MM-DD HH:MM:SS
+    и возвращает JSON ответ с данными """
 
-    if 0 <= current_hour < 6:
-        result = "Доброй ночи"
-    elif 6 <= current_hour < 12:
-        result = "Доброе Утро"
-    elif 12 <= current_hour < 18:
-        result = "Добрый день"
-    else:
-        result = "Добрый вечер"
+    time_period = get_slice_data(date_str)
+    data_frame_cut = get_cut_from_excel(PATH_TO_EXCEL, time_period)
+
+    # 1. Приветствие
+    greeting = current_time_greeting()
+
+    # 2. По каждой карте
+
+    result = {
+        "greeting": greeting,
+        "cards": [],
+        "top_transactions": [],
+        "currency_rates": [],
+        "stock_prices": []
+    }
 
     return result
