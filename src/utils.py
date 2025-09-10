@@ -1,6 +1,9 @@
 from datetime import datetime
+from pprint import pprint
 
 import pandas as pd
+from jaraco.functools import result_invoke
+from mypyc.analysis.attrdefined import detect_undefined_bitmap
 
 
 def current_time_greeting() -> str: #  Входные данные - YYYY-MM-DD HH:MM:SS
@@ -27,14 +30,40 @@ def get_slice_data(date_time: str, date_format: str = "%Y-%m-%d %H:%M:%S"):
     dt = datetime.strptime(date_time, date_format)
     start_month = dt.replace(day=1)
     return [
-        start_month.strftime("%d-%m_%Y"), dt.strftime("%d-%m_%Y")
+        start_month.strftime("%d.%m.%Y"), dt.strftime("%d.%m.%Y")
     ]
 
 
-def get_cut_from_excel(path_to_file: str, period_date: list):
-    """ Чтение xlsx файла. """
-    
+def get_cut_from_excel(path_to_file: str, period_date: list) -> list[dict]:
+    """ Чтение xlsx файла и срез по дате """
+
+    start_date = pd.to_datetime(period_date[0], dayfirst=True)
+    end_date = pd.to_datetime(period_date[1], dayfirst=True)
+
     df = pd.read_excel(path_to_file)
-    return df.to_dict(orient='records')
+    df["Дата операции"] = pd.to_datetime(df["Дата операции"], dayfirst=True)
+    filtered_df = df[df["Дата операции"].between(start_date, end_date)]
+    return filtered_df.to_dict(orient="records")
+
+
+def get_total_spent_card(dataframe):
+    """ Группировка по картам, вывод общее число расходов и кешбэк"""
+
+    result = []
+    cards = {}
+
+    for i in dataframe:
+        if i.get('Номер карты', False) not in cards:
+            cards[i.get('Номер карты')] = [i.get('Сумма операции с округлением')]
+        else:
+            cards[i.get('Номер карты')].append(i.get('Сумма операции с округлением'))
+
+    for key, value in cards.items():
+        result.append({"last_digits": key, "total_spent": sum(value), "cashback": round(sum(value)/100, 2)})
+
+    return result
+
+
+
 
 

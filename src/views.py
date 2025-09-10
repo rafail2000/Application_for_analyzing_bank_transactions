@@ -1,9 +1,12 @@
 import json
+from pprint import pprint
+
+from click import group
 
 from config import PATH_TO_EXCEL
 from src.utils import (
     current_time_greeting,
-    get_slice_data, get_cut_from_excel
+    get_slice_data, get_cut_from_excel, get_total_spent_card
 )
 
 def main_page(date_str: str) -> json:
@@ -18,10 +21,11 @@ def main_page(date_str: str) -> json:
     greeting = current_time_greeting()
 
     # 2. По каждой карте
+    group_cards = get_total_spent_card(data_frame_cut)
 
     result = {
         "greeting": greeting,
-        "cards": [],
+        "cards": group_cards,
         "top_transactions": [],
         "currency_rates": [],
         "stock_prices": []
