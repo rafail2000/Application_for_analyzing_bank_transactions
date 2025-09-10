@@ -34,7 +34,7 @@ def get_slice_data(date_time: str, date_format: str = "%Y-%m-%d %H:%M:%S"):
 def get_cut_from_excel(path_to_file: str, period_date: list):
     """ Чтение xlsx файла. """
     
-    df = pd.read_excel(path)
+    df = pd.read_excel(path_to_file)
     return df.to_dict(orient='records')
 
 

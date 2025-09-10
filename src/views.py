@@ -3,7 +3,7 @@ import json
 from config import PATH_TO_EXCEL
 from src.utils import (
     current_time_greeting,
-    get_slice_data
+    get_slice_data, get_cut_from_excel
 )
 
 def main_page(date_str: str) -> json:
