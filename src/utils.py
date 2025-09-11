@@ -1,9 +1,10 @@
+import os
 from datetime import datetime
 from pprint import pprint
 
 import pandas as pd
-from jaraco.functools import result_invoke
-from mypyc.analysis.attrdefined import detect_undefined_bitmap
+import requests
+from dotenv import load_dotenv
 
 
 def current_time_greeting() -> str: #  Входные данные - YYYY-MM-DD HH:MM:SS
@@ -62,6 +63,45 @@ def get_total_spent_card(dataframe):
         result.append({"last_digits": key, "total_spent": sum(value), "cashback": round(sum(value)/100, 2)})
 
     return result
+
+
+def get_five_transaction(data_frame_cut):
+    """ Получение пяти транзакций с максимальным платежом """
+
+    result = []
+
+    descending_sort = sorted(data_frame_cut, key=lambda x: x["Сумма операции с округлением"], reverse=True)
+
+    for i in descending_sort[0:5]:
+        result.append({"date": i["Дата операции"],
+                       "amount": i["Сумма операции с округлением"],
+                       "category": i["Категория"],
+                       "description": i["Описание"]
+                       })
+
+    return result
+
+
+def get_exchange_rate():
+    """ Получение курса валют """
+
+    result = []
+
+    load_dotenv()
+
+    api_key = os.environ.get("API_KEY")
+
+    data = requests.get(api_key).json()
+    data_eur_usd = [data['Valute']['USD'], data['Valute']['EUR']]
+
+    for i in data_eur_usd:
+        result.append({"currency": i['CharCode'], "rate": round(i['Value'], 2)})
+
+    return result
+
+
+
+print(get_exchange_rate())
 
 
 

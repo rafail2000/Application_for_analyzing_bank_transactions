@@ -1,12 +1,14 @@
 import json
-from pprint import pprint
 
-from click import group
 
 from config import PATH_TO_EXCEL
 from src.utils import (
     current_time_greeting,
-    get_slice_data, get_cut_from_excel, get_total_spent_card
+    get_slice_data,
+    get_cut_from_excel,
+    get_total_spent_card,
+    get_five_transaction,
+    get_exchange_rate
 )
 
 def main_page(date_str: str) -> json:
@@ -23,11 +25,17 @@ def main_page(date_str: str) -> json:
     # 2. По каждой карте
     group_cards = get_total_spent_card(data_frame_cut)
 
+    # Топ-5 транзакций по сумме платежа
+    top_five_transaction = get_five_transaction(data_frame_cut)
+
+    # Курс валют
+    exchange_rate = get_exchange_rate()
+
     result = {
         "greeting": greeting,
         "cards": group_cards,
-        "top_transactions": [],
-        "currency_rates": [],
+        "top_transactions": top_five_transaction,
+        "currency_rates": exchange_rate,
         "stock_prices": []
     }
 
