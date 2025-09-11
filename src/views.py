@@ -25,11 +25,13 @@ def main_page(date_str: str) -> json:
     # 2. По каждой карте
     group_cards = get_total_spent_card(data_frame_cut)
 
-    # Топ-5 транзакций по сумме платежа
+    # 3. Топ-5 транзакций по сумме платежа
     top_five_transaction = get_five_transaction(data_frame_cut)
 
-    # Курс валют
+    # 4. Курс валют
     exchange_rate = get_exchange_rate()
+
+    # 5. Стоимость акций из S&P500
 
     result = {
         "greeting": greeting,
