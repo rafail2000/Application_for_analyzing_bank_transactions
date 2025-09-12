@@ -100,10 +100,20 @@ def get_exchange_rate():
     return result
 
 
+def get_share_price():
+    """ Получение цены акций  S&P 500"""
 
-print(get_exchange_rate())
+    load_dotenv()
 
+    api_key = os.environ.get("API_SP500")
 
+    result = [requests.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AAPL&apikey=' + api_key).json(),
+            requests.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AMZN&apikey=' + api_key).json(),
+            requests.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=GOOGL&apikey=' + api_key).json(),
+            requests.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=MSFT&apikey=' + api_key).json(),
+            requests.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=TSLA&apikey=' + api_key).json()
+            ]
 
+    return result
 
-
+pprint(get_share_price())

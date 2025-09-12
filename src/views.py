@@ -32,6 +32,7 @@ def main_page(date_str: str) -> json:
     exchange_rate = get_exchange_rate()
 
     # 5. Стоимость акций из S&P500
+    share_price = get_share_price()
 
     result = {
         "greeting": greeting,
