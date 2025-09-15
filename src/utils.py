@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 import requests
+from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
 import yfinance as yf
 
@@ -137,3 +138,14 @@ def get_cashback(data):
         result[i['Категория']] = i['Кэшбэк']
 
     return result
+
+
+def get_time_tree_month(date):
+    """ Получение трёхмесячнего периода"""
+
+    dt = datetime.strptime(date, "%d.%m.%Y")
+    start_month = dt - relativedelta(months=3)
+
+    return [
+        start_month.strftime("%d.%m.%Y"), dt.strftime("%d.%m.%Y")
+    ]
