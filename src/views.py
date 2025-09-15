@@ -8,7 +8,7 @@ from src.utils import (
     get_cut_from_excel,
     get_total_spent_card,
     get_five_transaction,
-    get_exchange_rate
+    get_exchange_rate, get_share_price
 )
 
 def main_page(date_str: str) -> json:
@@ -39,7 +39,7 @@ def main_page(date_str: str) -> json:
         "cards": group_cards,
         "top_transactions": top_five_transaction,
         "currency_rates": exchange_rate,
-        "stock_prices": []
+        "stock_prices": share_price
     }
 
-    return result
+    return json.dumps(result, indent=4, ensure_ascii=True)

@@ -5,6 +5,7 @@ from pprint import pprint
 import pandas as pd
 import requests
 from dotenv import load_dotenv
+import yfinance as yf
 
 
 def current_time_greeting() -> str: #  Входные данные - YYYY-MM-DD HH:MM:SS
@@ -73,7 +74,7 @@ def get_five_transaction(data_frame_cut):
     descending_sort = sorted(data_frame_cut, key=lambda x: x["Сумма операции с округлением"], reverse=True)
 
     for i in descending_sort[0:5]:
-        result.append({"date": i["Дата операции"],
+        result.append({"date": str(i["Дата операции"]),
                        "amount": i["Сумма операции с округлением"],
                        "category": i["Категория"],
                        "description": i["Описание"]
@@ -101,19 +102,14 @@ def get_exchange_rate():
 
 
 def get_share_price():
-    """ Получение цены акций  S&P 500"""
+    """ Получение цены акций S&P 500"""
 
-    load_dotenv()
+    company = ["AAPL", "AMZN", "GOOGL", "MSFT", "TSLA"]
+    result = []
 
-    api_key = os.environ.get("API_SP500")
-
-    result = [requests.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AAPL&apikey=' + api_key).json(),
-            requests.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AMZN&apikey=' + api_key).json(),
-            requests.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=GOOGL&apikey=' + api_key).json(),
-            requests.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=MSFT&apikey=' + api_key).json(),
-            requests.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=TSLA&apikey=' + api_key).json()
-            ]
+    for i in company:
+        com = yf.Ticker(i)
+        info = com.info
+        result.append({"stock": i, "price": info.get('postMarketPrice')})
 
     return result
-
-pprint(get_share_price())
