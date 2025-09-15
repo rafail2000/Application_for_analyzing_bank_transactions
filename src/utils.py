@@ -1,6 +1,5 @@
 import os
-from datetime import datetime
-from pprint import pprint
+from datetime import datetime, timedelta
 
 import pandas as pd
 import requests
@@ -111,5 +110,30 @@ def get_share_price():
         com = yf.Ticker(i)
         info = com.info
         result.append({"stock": i, "price": info.get('postMarketPrice')})
+
+    return result
+
+
+def get_slice_data_for_month(year: str, month: str, date_format: str = "%Y-%m-%d") -> list:
+    """ Пример вывода: "20.05.2020" -> 01.05.2020-31.05.2020 """
+
+    date = f"01.{month}.{year}"
+    start_month = datetime.strptime(date, "%d.%m.%Y")
+    next_month = start_month.replace(day=28) + timedelta(days=4)
+    end_month = next_month - timedelta(days=next_month.day)
+
+    return [
+        start_month.strftime("%d.%m.%Y"), end_month.strftime("%d.%m.%Y")
+        ]
+
+def get_cashback(data):
+    """ Функция для вычисления выгодной категории кэшбэка """
+
+    result = {}
+
+    sorted_data = sorted(data, key=lambda x: x['Кэшбэк'], reverse=True)
+
+    for i in sorted_data:
+        result[i['Категория']] = i['Кэшбэк']
 
     return result

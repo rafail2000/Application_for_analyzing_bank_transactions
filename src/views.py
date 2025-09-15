@@ -42,4 +42,4 @@ def main_page(date_str: str) -> json:
         "stock_prices": share_price
     }
 
-    return json.dumps(result, indent=4, ensure_ascii=True)
+    return json.dumps(result, indent=4, ensure_ascii=False)
