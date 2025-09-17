@@ -1,12 +1,10 @@
 import datetime
-from pprint import pprint
 import pandas as pd
 
-from config import PATH_TO_EXCEL
 from src.utils import get_time_tree_month
 
 
-def main_service(transactions: pd.DataFrame, category: str, date: str = datetime.datetime.today()):
+def main_reports(transactions: pd.DataFrame, category: str, date: str = datetime.datetime.today()):
     """Функция принимает на вход:
     датафрейм с транзакциями,
     название категории,

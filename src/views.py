@@ -11,6 +11,7 @@ from src.utils import (
     get_exchange_rate, get_share_price
 )
 
+
 def main_page(date_str: str) -> json:
     """ Функция принимает на вход строку с датой в формате
     YYYY-MM-DD HH:MM:SS

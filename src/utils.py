@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta
+from math import isnan
 
 import pandas as pd
 import requests
@@ -8,7 +9,7 @@ from dotenv import load_dotenv
 import yfinance as yf
 
 
-def current_time_greeting() -> str: #  Входные данные - YYYY-MM-DD HH:MM:SS
+def current_time_greeting() -> str:  # Входные данные - YYYY-MM-DD HH:MM:SS
     """ Функция приветствия пользователя в зависимости от времени суток """
 
     user_datetime = datetime.now()
@@ -61,7 +62,7 @@ def get_total_spent_card(dataframe):
             cards[i.get('Номер карты')].append(i.get('Сумма операции с округлением'))
 
     for key, value in cards.items():
-        result.append({"last_digits": key, "total_spent": sum(value), "cashback": round(sum(value)/100, 2)})
+        result.append({"last_digits": key, "total_spent": sum(value), "cashback": round(sum(value) / 100, 2)})
 
     return result
 
@@ -86,17 +87,22 @@ def get_five_transaction(data_frame_cut):
 def get_exchange_rate():
     """ Получение курса валют """
 
-    result = []
-
     load_dotenv()
 
-    api_key = os.environ.get("API_KEY")
+    api_key = os.environ.get("API_SP500")
+    usd = 'https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol=RUB&apikey=' + api_key
+    eur = 'https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol=RUB&apikey=' + api_key
 
-    data = requests.get(api_key).json()
-    data_eur_usd = [data['Valute']['USD'], data['Valute']['EUR']]
+    data_usd = requests.get(usd).json()
+    data_eur = requests.get(eur).json()
 
-    for i in data_eur_usd:
-        result.append({"currency": i['CharCode'], "rate": round(i['Value'], 2)})
+    date_usd = data_usd['Meta Data']['5. Last Refreshed']
+    data_usd = data_usd['Time Series FX (Daily)'][date_usd]
+    date_eur = data_eur['Meta Data']['5. Last Refreshed']
+    data_eur = data_eur['Time Series FX (Daily)'][date_eur]
+
+    result = [{"currency": "USD", "rate": round(data_usd['4. close'], 2)},
+              {"currency": "EUR", "rate": round(data_eur['4. close'], 2)}]
 
     return result
 
@@ -115,7 +121,7 @@ def get_share_price():
     return result
 
 
-def get_slice_data_for_month(year: str, month: str, date_format: str = "%Y-%m-%d") -> list:
+def get_slice_data_for_month(year: str, month: str) -> list:
     """ Пример вывода: "20.05.2020" -> 01.05.2020-31.05.2020 """
 
     date = f"01.{month}.{year}"
@@ -125,7 +131,8 @@ def get_slice_data_for_month(year: str, month: str, date_format: str = "%Y-%m-%d
 
     return [
         start_month.strftime("%d.%m.%Y"), end_month.strftime("%d.%m.%Y")
-        ]
+    ]
+
 
 def get_cashback(data):
     """ Функция для вычисления выгодной категории кэшбэка """
@@ -135,7 +142,8 @@ def get_cashback(data):
     sorted_data = sorted(data, key=lambda x: x['Кэшбэк'], reverse=True)
 
     for i in sorted_data:
-        result[i['Категория']] = i['Кэшбэк']
+        if not isnan(i['Кэшбэк']):
+            result[i['Категория']] = i['Кэшбэк']
 
     return result
 
