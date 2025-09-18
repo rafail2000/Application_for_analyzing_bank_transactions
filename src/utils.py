@@ -101,8 +101,8 @@ def get_exchange_rate():
     date_eur = data_eur['Meta Data']['5. Last Refreshed']
     data_eur = data_eur['Time Series FX (Daily)'][date_eur]
 
-    result = [{"currency": "USD", "rate": round(data_usd['4. close'], 2)},
-              {"currency": "EUR", "rate": round(data_eur['4. close'], 2)}]
+    result = [{"currency": "USD", "rate": data_usd['4. close']},
+              {"currency": "EUR", "rate": data_eur['4. close']}]
 
     return result
 
