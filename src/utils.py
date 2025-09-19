@@ -149,7 +149,7 @@ def get_cashback(data):
 
 
 def get_time_tree_month(date):
-    """ Получение трёхмесячнего периода"""
+    """ Получение трёх месячнего периода"""
 
     dt = datetime.strptime(date, "%d.%m.%Y")
     start_month = dt - relativedelta(months=3)
