@@ -41,6 +41,6 @@ def test_get_total_spent_card(slice_data_excel):
 
 
 def test_get_five_transaction(slice_data_excel):
-    """"""
+    """ Тесты для проверки топ пяти транзакций """
 
     assert get_five_transaction(slice_data_excel) == [{'date': '2021-09-01 14:51:14', 'amount': 5990.0, 'category': 'Каршеринг', 'description': 'Ситидрайв'}, {'date': '2021-09-01 10:56:17', 'amount': 345.0, 'category': 'Аптеки', 'description': 'Аптека Вита'}, {'date': '2021-09-02 09:16:40', 'amount': 289.99, 'category': 'Супермаркеты', 'description': 'Магнит'}, {'date': '2021-09-01 18:28:48', 'amount': 246.45, 'category': 'Супермаркеты', 'description': 'Магнит'}, {'date': '2021-09-01 21:00:34', 'amount': 200.0, 'category': 'Местный транспорт', 'description': 'Метро Санкт-Петербург'}]

@@ -27,6 +27,10 @@ def evening_time():
 def slice_date():
     return ['01.09.2021', '08.09.2021']
 
+@pytest.fixture
+def get_data():
+ return "01.09.2021"
+
 
 @pytest.fixture
 def slice_date_none():
@@ -201,3 +205,8 @@ def slice_data_excel():
           'Сумма операции': -345.0,
           'Сумма операции с округлением': 345.0,
           'Сумма платежа': -345.0}]
+
+
+@pytest.fixture
+def get_year_month():
+    return 2020, 10
